@@ -207,7 +207,7 @@ void ConfigMgr::import_from(std::istream & input) {
 }
 
 void ConfigMgr::export_to(std::ostream & output) {
-    output << "port\tpassword\tdata cap\tusage" << endl;
+    output << "port\tpassword\tdata_cap\tusage" << endl;
     
     for (UserMap::value_type u : users)
         output << u.first << "\t" << u.second.password << "\t" << u.second.datacap << "\t" << u.second.usage << endl;

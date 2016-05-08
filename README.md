@@ -79,7 +79,7 @@ The following examples assumes that you have the default installation of sswatch
    The result is a tab separated table, the same as sswatcher config file:
 
    ```
-   port	password	data cap	usage
+   port		password	data_cap	usage
    20000	password1	0			19048204
    30000	password2	20000000000	283957184
    ```
@@ -112,8 +112,11 @@ The following examples assumes that you have the default installation of sswatch
 ## Details
 
 - By default, sswatcher uses the config file at `/etc/shadowsocks.json` to initialize Shadowsocks. If you already have have that file in place, you will be asked if you would like to overwrite that file during installation.
+
 - The port `8383` is considered by sswatcher as a placeholder port in the Shadowsocks config file, and will be removed when sswatcher starts. If you plan to only use sswatcher, please leave this port in the Shadowsocks config file. However, if you want to use the Shadowsocks config file along with sswatcher, please do not use that port in your Shadowsocks config file. The reason for having a placeholder file is because Shadowsocks does not allow an empty `"port_password"` field.
+
 - To configure Shadowsocks using its own config file, please refer to this [link](https://github.com/shadowsocks/shadowsocks/wiki/Configure-Multiple-Users).
+
 - Passwords should not contain any spaces.
 
 ## Usage
