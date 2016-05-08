@@ -26,7 +26,6 @@ sswatcher is a [Shadowsocks](https://shadowsocks.org/en/index.html) user managem
 ## Installation
 
 1. Install Shadowsocks Python (version 2.8.2 or above is preferred)
-
    sswatcher currently does NOT work with Shadowsocks-libev. After you have installed [pip](https://pip.pypa.io/en/stable/installing/), install Shadowsocks:
 
    ```
@@ -34,6 +33,10 @@ sswatcher is a [Shadowsocks](https://shadowsocks.org/en/index.html) user managem
    ```
 
 2. Download sswatcher
+
+   ```
+   git clone https://github.com/meomoe/sswatcher.git
+   ```
 
 3. Install sswatcher
 
@@ -102,15 +105,15 @@ The following examples assume that you have the default installation of sswatche
    sswatcher load ~/users.tsv
    ```
 
-   Note: currently, loading a config file to sswatcher erases all previous entries; however, if a port exist both in the old configuration and the loaded config file, and its usage data was not present in the loaded file (as in this example), its usage data will be preserved.
+   Note: currently, loading a config file to sswatcher erases all previous entries; however, if a port exists both in the old configuration and the loaded config file, and its usage data was not present in the loaded file (as in this example), its usage data will be preserved.
 
 ## Details
 
 - By default, sswatcher uses the config file at `/etc/shadowsocks.json` to initialize Shadowsocks. If you already have have that file in place, you will be asked if you would like to overwrite that file during installation.
 
-- The port `8383` is considered by sswatcher as a placeholder port in the Shadowsocks config file, and will be removed when sswatcher starts. If you plan to only use sswatcher, please leave this port in the Shadowsocks config file. However, if you want to use the Shadowsocks config file along with sswatcher, please do not use that port in your Shadowsocks config file. The reason for having a placeholder file is because Shadowsocks does not allow an empty `"port_password"` field.
+- The port `8383` is considered by sswatcher as a placeholder port in the Shadowsocks config file, and will be removed when sswatcher starts. If you plan to only use sswatcher, please leave this port in the Shadowsocks config file. However, if you have configured ports in the Shadowsocks config file, please do not use port `8383`. The reason for having a placeholder file is because Shadowsocks does not allow an empty `"port_password"` field.
 
-- To configure Shadowsocks using its own config file, please refer to this [link](https://github.com/shadowsocks/shadowsocks/wiki/Configure-Multiple-Users).
+   To learn more about Shadowsocks config file, please refer to this [link](https://github.com/shadowsocks/shadowsocks/wiki/Configure-Multiple-Users).
 
 - Passwords should not contain any spaces.
 
@@ -179,6 +182,14 @@ The following instructions **requires** superuser privilege:
 
 - `stop`
 - `restart`
+
+## TODO
+
+- Convert statistics units to KB, MB, GB, etc.
+
+- Attach note to each port
+
+- Connect to database
 
 ## License
 
