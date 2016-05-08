@@ -19,6 +19,7 @@ sswatcher is a [Shadowsocks](https://shadowsocks.org/en/index.html) user managem
 
 - Linux or OS X
   - Note: sswatcher is tested on OS X 10.11, Ubuntu 14.04 LTS, and Debian 8.0. However, no guarantee is provided for its reliability on these platforms, or other Linux or Unix distributions.
+
 - Shadowsocks Python 2.8
 
 
@@ -41,16 +42,10 @@ sswatcher is a [Shadowsocks](https://shadowsocks.org/en/index.html) user managem
    make && sudo make install
    ```
 
-4. start sswatcher
-
-   ```
-   sudo sswatcher --start
-   ```
-
 
 ## Examples
 
-The following examples assumes that you have the default installation of sswatcher and Shadowsocks Python.
+The following examples assume that you have the default installation of sswatcher and Shadowsocks Python.
 
 1. Start sswatcher
 
@@ -119,9 +114,16 @@ The following examples assumes that you have the default installation of sswatch
 
 - Passwords should not contain any spaces.
 
+
 ## Usage
 
     sswatcher <command> [arguments]
+
+You can optionally prefix each command with two hyphens ("--") for clarity.
+
+    ```
+    sswatcher --usage
+    ```
 
 ### Commands
 
