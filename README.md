@@ -121,9 +121,8 @@ The following examples assume that you have the default installation of sswatche
 
 You can optionally prefix each command with two hyphens ("--") for clarity.
 
-    ```
     sswatcher --usage
-    ```
+
 
 ### Commands
 
