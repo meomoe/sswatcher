@@ -1,0 +1,8 @@
+{
+    "server": "::",
+    "port_password": {
+        "8388": "foobar1"
+    },
+    "timeout": 600,
+    "method": "aes-256-cfb"
+}
