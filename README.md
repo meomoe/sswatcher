@@ -1,4 +1,4 @@
-# sswatcher
+# sswatcher [![Build Status](https://travis-ci.org/meomoe/sswatcher.svg?branch=master)](https://travis-ci.org/meomoe/sswatcher)
 
 sswatcher - Shadowsocks server watcher
 
