@@ -88,7 +88,7 @@ The following examples assume that you have the default installation of sswatche
    sswatcher stat
    ```
 
-   The result is a tab separated table, the same as sswatcher config file:
+   The result is a tab separated table:
 
    ```
    port		password	data_cap		usage
