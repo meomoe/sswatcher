@@ -79,7 +79,7 @@ The following examples assume that you have the default installation of sswatche
 3. Add port `30000` with `password2`, and set the data cap to 20 GB.
 
    ```
-   sswatcher add 30000 password2 20000000000
+   sswatcher add 30000 password2 20
    ```
 
 4. Show statistics for current users
@@ -91,9 +91,9 @@ The following examples assume that you have the default installation of sswatche
    The result is a tab separated table, the same as sswatcher config file:
 
    ```
-   port		password	data_cap	usage
-   20000	password1	0			19048204
-   30000	password2	20000000000	283957184
+   port		password	data_cap		usage
+   20000	password1	0 (unlimited)	19.05 GB
+   30000	password2	20.00 GB		283.96 MB
    ```
 
 5. Remove port `30000`
