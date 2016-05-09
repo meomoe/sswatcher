@@ -14,6 +14,7 @@
 #include "sys_helper.hpp"
 #include "shared_const.h"
 #include "ver.h"
+#include "commands.h"
 
 using std::cout;
 using std::endl;
@@ -29,6 +30,8 @@ void handle_input(int argc, const char * argv[]);
 
 void send_connect_signal();
 
+string remove_pref(const char * arg);
+
 int main(int argc, const char * argv[]) {
     handle_input(argc, argv);
 }
@@ -38,40 +41,33 @@ void handle_input(int argc, const char * argv[]) {
     if (argc <= 1) {
         cout << "status:" << endl;
         show_status();
-        cout << "(\"" << SSWATCHER << " help\" for help)" << endl;
+        cout << "(\"" << SSWATCHER << " "<< CMD_HELP << "\" for help)" << endl;
         exit(EXIT_SUCCESS);
     } else {
         ConfigMgr * mgr = &ConfigMgr::instance();
-        string task(argv[1]);
-        
-        if (task.substr(0, 2) == "--")
-            task = task.substr(2);
+        string task = remove_pref(argv[1]);
         
         if (argc == 2) {
-            if (task == "start")
+            if (task == CMD_START)
                 start_ss();
-            else if (task == "stop")
+            else if (task == CMD_STOP)
                 stop_ss();
-            else if (task == "restart")
+            else if (task == CMD_RESTART)
                 restart();
-            else if (task == "load") {
+            else if (task == CMD_LOAD) {
                 mgr->import_from(cin);
-            } else if (task == "usage")
-                mgr->export_to(cout);
-            else if (task == "reset_usage_all") {
+            } else if (task == CMD_STAT)
+                mgr->export_to(cout, true);
+            else if (task == CMD_RESET_ALL) {
                 mgr->reset_usage_for_all();
-                mgr->export_to(cout);
-            } else if (task == "status")
+                mgr->export_to(cout, true);
+            } else if (task == CMD_STATUS)
                 show_status();
-            else if (task == "default_datacap") {
-                uint64_t cap = get_default_datacap();
-                if (cap > 0)
-                    cout << cap << " bytes" << endl;
-                else
-                    cout << "0 (infinite)" << endl;
-            } else if (task == "help")
+            else if (task == CMD_DEF_LIM_1 || task == CMD_DEF_LIM_2) {
+                cout << get_formatted_datacap() << endl;
+            } else if (task == CMD_HELP)
                 show_usage(true);
-            else if (task == "version")
+            else if (task == CMD_VER_1 || task == CMD_VER_2)
                 cout << SSWATCHER " version " << WATCHER_VER_0 << "." << WATCHER_VER_1
                      << "." << WATCHER_VER_2 << endl;
             else {
@@ -79,50 +75,52 @@ void handle_input(int argc, const char * argv[]) {
                 exit(EXIT_FAILURE);
             }
         } else if (argc == 3) {
-            if (task == "remove")
-                mgr->remove_port(atol(argv[2]));
-            else if (task == "load_file") {
+            if (task == CMD_REMOVE)
+                mgr->remove_port(argv[2]);
+            else if (task == CMD_LOAD) {
                 ifstream input((string(argv[2])));
                 mgr->import_from(input);
                 input.close();
-            } else if (task == "export_file") {
+            } else if (task == CMD_EXPORT) {
                 ofstream output((string(argv[2])));
                 mgr->export_to(output);
                 output.close();
-            } else if (task == "set_default_datacap") {
-                set_default_datacap(atoll(argv[2]));
-            } else if (task == "update_limit_all") {
-                mgr->update_datacap_for_all(atol(argv[2]));
-            } else if (task == "reset_usage") {
-                mgr->reset_usage_for_port(atol(argv[2]));
+            } else if (task == CMD_DEF_LIM_1 || task == CMD_DEF_LIM_2) {
+                set_default_datacap(argv[2]);
+            } else if (task == CMD_DEF_LIM_1 || task == CMD_DEF_LIM_2) {
+                mgr->update_datacap_for_all(argv[2]);
+            } else if (task == CMD_RESET) {
+                mgr->reset_usage_for_port(argv[2]);
             } else {
                 show_usage(false);
                 exit(EXIT_FAILURE);
             }
         } else {
-            if (task == "add" || task == "update") {
+            if (task == CMD_ADD || task == CMD_UPDATE) {
                 if (argc == 4) {
-                    mgr->add_port(atol(argv[2]), string(argv[3]));
+                    mgr->add_port(argv[2], argv[3]);
                 } else if (argc == 5) {
-                    mgr->add_port(atol(argv[2]), string(argv[3]), atoll(argv[4]));
+                    mgr->add_port(argv[2], argv[3], argv[4]);
                 } else {
                     show_usage(false);
                     exit(EXIT_FAILURE);
                 }
-            } else if (task == "update_limit") {
-                mgr->update_datacap_for_port(atol(argv[2]), atol(argv[3]));
-            } else if (task == "start") {
+            } else if (task == CMD_LIM) {
+                mgr->update_datacap_for_port(argv[2], argv[3]);
+            } else if (task == CMD_START) {
                 
                 string user;
                 string path;
-                if (string(argv[2]) == "user")
+                string cmd1 = remove_pref(argv[2]);
+                if (cmd1 == CMD_USER)
                     user = string(argv[3]);
-                if (string(argv[2]) == "config")
+                if (cmd1 == CMD_CONFIG)
                     path = string(argv[3]);
                 if (argc == 6) {
-                    if (string(argv[4]) == "user")
+                    string cmd2 = remove_pref(argv[4]);
+                    if (cmd2 == CMD_USER)
                         user = string(argv[5]);
-                    if (string(argv[4]) == "config")
+                    if (cmd2 == CMD_CONFIG)
                         path = string(argv[5]);
                 }
                 Path::set_ss_config(path);
@@ -134,18 +132,26 @@ void handle_input(int argc, const char * argv[]) {
             }
         }
         
-        if (task == "load" ||
-            task == "reset_usage_all" ||
-            task == "remove" ||
-            task == "load_file" ||
-            task == "set_default_datacap" ||
-            task == "update_limit_all" ||
-            task == "reset_usage" ||
-            task == "add" || task == "update" ||
-            task == "update_limit") {
+        if (task == CMD_LOAD ||
+            task == CMD_RESET ||
+            task == CMD_RESET ||
+            task == CMD_REMOVE ||
+            task == CMD_DEF_LIM_1 ||
+            task == CMD_DEF_LIM_2 ||
+            task == CMD_LIM ||
+            task == CMD_LIM_ALL ||
+            task == CMD_ADD ||
+            task == CMD_UPDATE) {
             send_connect_signal();
         }
     }
+}
+
+string remove_pref(const char * arg) {
+    string res(arg);
+    if (res.substr(0,2) == LONG_PREF)
+        res = res.substr(2);
+    return res;
 }
 
 void send_connect_signal() {
@@ -157,21 +163,24 @@ void show_usage(bool success) {
     if (!success)
         cout << "error: unsupported option" << endl << endl;
     
+    string spaces = "        ";
+    
     cout << "usage: sswatcher <command> [option]" << endl << endl;
     cout << "supported commands:" <<endl;
-    cout << "        status, usage, load, version" << endl;
-    cout << "        add <port> <password> [datacap]" << endl;
-    cout << "        update <port> <password> [datacap]" << endl;
-    cout << "        update_limit <port> <limit>" << endl;
-    cout << "        update_limit_all <limit>" << endl;
-    cout << "        reset_usage <port>" << endl;
-    cout << "        reset_usage_all" << endl;
-    cout << "        remove <port>" << endl;
-    cout << "        load_file <file_path>" << endl;
-    cout << "        export_file <file_path>" << endl;
-    cout << "        default_datacap" << endl;
-    cout << "        set_default_datacap <datacap in bytes>" << endl;
+    cout << spaces << CMD_STATUS << ", " << CMD_STAT << ", " << CMD_LOAD << ", " << CMD_VER_2 << endl;
+    cout << spaces << CMD_ADD << " <port> <password> [limit]" << endl;
+    cout << spaces << CMD_UPDATE << " <port> <password> [limit]" << endl;
+    cout << spaces << CMD_LIM << " <port> <limit>" << endl;
+    cout << spaces << CMD_LIM_ALL << " <limit>" << endl;
+    cout << spaces << CMD_RESET << " <port>" << endl;
+    cout << spaces << CMD_RESET_ALL << endl;
+    cout << spaces << CMD_REMOVE << " <port>" << endl;
+    cout << spaces << CMD_LOAD << " <file_path>" << endl;
+    cout << spaces << CMD_EXPORT << " <file_path>" << endl;
+    cout << spaces << CMD_DEF_LIM_2 << endl;
+    cout << spaces << CMD_DEF_LIM_2 << " <limit>" << endl;
+    
     cout << "  - run these commands as root:" << endl;
-    cout << "        start [user <run_as_user>] [config <file_path>]" << endl;
-    cout << "        stop, restart" << endl;
+    cout << spaces << CMD_START << " [user <run_as_user>] [config <file_path>]" << endl;
+    cout << spaces << CMD_STOP << ", " << CMD_RESTART << "" << endl;
 }

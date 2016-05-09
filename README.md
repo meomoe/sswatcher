@@ -2,7 +2,7 @@
 
 sswatcher - Shadowsocks server watcher
 
-sswatcher is a [Shadowsocks](https://shadowsocks.org/en/index.html) user management utility written in C++. sswatcher enables easy management of multiple users for a Shadowsocks server. It communicates with Shadowsocks through the [Shadowsocks Manager API](https://github.com/shadowsocks/shadowsocks/wiki/Manage-Multiple-Users). 
+sswatcher is a [Shadowsocks](https://shadowsocks.org/en/index.html) user management utility written in C++. sswatcher enables easy management of multiple users for a Shadowsocks server. It communicates with Shadowsocks through the [Shadowsocks Manager API](https://github.com/shadowsocks/shadowsocks/wiki/Manage-Multiple-Users).
 
 
 
@@ -22,14 +22,28 @@ sswatcher is a [Shadowsocks](https://shadowsocks.org/en/index.html) user managem
 
 - Shadowsocks Python 2.8
 
+- [GCC](https://gcc.gnu.org) 4.7 or above, or [Clang](http://clang.llvm.org) 3.3 or above
+
 
 ## Installation
 
-1. Install Shadowsocks Python (version 2.8.2 or above is preferred)
-   sswatcher currently does NOT work with Shadowsocks-libev. After you have installed [pip](https://pip.pypa.io/en/stable/installing/), install Shadowsocks:
+1. Install Shadowsocks Python (version 2.8.2 or above is preferred)  
+   sswatcher currently does **not** work with Shadowsocks-libev. After you have installed [pip](https://pip.pypa.io/en/stable/installing/), install Shadowsocks:
 
    ```
    pip install shadowsocks
+   ```
+
+   If you have previously installed Shadowsocks, make sure that it provides the Manager API:
+
+   ```
+   ssserver --help | grep manager
+   ```
+
+   You should see the following output:
+
+   ```
+      --manager-address ADDR optional server manager UDP address, see wiki
    ```
 
 2. Download sswatcher
@@ -71,7 +85,7 @@ The following examples assume that you have the default installation of sswatche
 4. Show statistics for current users
 
    ```
-   sswatcher usage
+   sswatcher stat
    ```
 
    The result is a tab separated table, the same as sswatcher config file:
@@ -111,8 +125,7 @@ The following examples assume that you have the default installation of sswatche
 
 - By default, sswatcher uses the config file at `/etc/shadowsocks.json` to initialize Shadowsocks. If you already have have that file in place, you will be asked if you would like to overwrite that file during installation.
 
-- The port `8383` is considered by sswatcher as a placeholder port in the Shadowsocks config file, and will be removed when sswatcher starts. If you plan to only use sswatcher, please leave this port in the Shadowsocks config file. However, if you have configured ports in the Shadowsocks config file, please do not use port `8383`. The reason for having a placeholder file is because Shadowsocks does not allow an empty `"port_password"` field.
-
+- The port `8383` is considered by sswatcher as a placeholder port in the Shadowsocks config file, and will be removed when sswatcher starts. If you plan to only use sswatcher, please leave this port in the Shadowsocks config file. However, if you have configured ports in the Shadowsocks config file, please do not use port `8383`. The reason for having a placeholder file is because Shadowsocks does not allow an empty `"port_password"` field.  
    To learn more about Shadowsocks config file, please refer to this [link](https://github.com/shadowsocks/shadowsocks/wiki/Configure-Multiple-Users).
 
 - Passwords should not contain any spaces.
@@ -120,78 +133,8 @@ The following examples assume that you have the default installation of sswatche
 
 ## Usage
 
-    sswatcher <command> [arguments]
-
-You can optionally prefix each command with two hyphens ("--") for clarity.
-
-    sswatcher --usage
-
-
-### Commands
-
-- `status`
-  - Shows the current status of ssserver and sswatcherd, the sswatcher daemon
-
-- `usage`
-  - Shows current usage data
-
-- `add <port> <password> [datacap]`
-  - Adds `port` with `password` to Shadowsocks. Optionally, you can specify `datacap` in bytes for this user.
-
-- `update <port> <password> [datacap]`
-  - Behaves the same as `add`. Exists for semantic purposes.
-
-- `update_limit <port> <datacap>`
-  - Updates the `datacap` (bytes) for user at `port`. The specified port has to be maintained by sswatcher.
-
-- `update_limit_all <datacap>`
-  - Updates the `datacap` for all users.
-
-- `reset_usage <port>`
-  - Resets the usage statistics for user at `port` to 0.
-
-- `reset_usage_all`
-  - Resets all users' usage statistics to 0.
-
-- `remove <port>`
-  - Removes the `port` from Shadowsocks, and delete from sswatcher.
-
-- `load`
-  - Loads sswatcher configuration from standard input.
-
-- `load_file <filename>`
-  - Loads sswatcher configuration file at `filename`.
-
-- `export_file <file>`
-  - Exports sswatcher configuration and statistics to `file`.
-
-- `default_datacap`
-  - Prints the default data cap in bytes.
-
-- `set_default_datacap <datacap>`
-  - Sets the default datacap to `datacap` (bytes).
-
-- `version`
-  - Prints sswatcher version.
-
-
-The following instructions **requires** superuser privilege:
-
-- `start [user <run_as_user>] `
-  - Starts Shadowsocks server `ssserver` and sswatcher daemon `sswatcherd`. If `run_as_user` is specified, `sswatcherd` will drop privileges to run_as_user after it is started.
-
-- `stop`
-- `restart`
-
-## TODO
-
-- Convert statistics units to KB, MB, GB, etc.
-
-- Attach note to each port
-
-- Connect to database
+    See [sswatcher Usage reference](https://github.com/meomoe/sswatcher/wiki/sswatcher-Usage-Reference).
 
 ## License
 
 This program is release under the MIT License.
-

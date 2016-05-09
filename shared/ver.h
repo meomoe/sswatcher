@@ -11,7 +11,7 @@
 
 #define WATCHER_VER_0 0
 #define WATCHER_VER_1 1
-#define WATCHER_VER_2 0
+#define WATCHER_VER_2 1
 
 #define DAEMON_VER_0 0
 #define DAEMON_VER_1 1

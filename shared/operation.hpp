@@ -23,7 +23,8 @@ using std::vector;
 using std::map;
 
 uint64_t get_default_datacap();
-void set_default_datacap(const uint64_t datacap);
+void set_default_datacap(const char * datacap);
+string get_formatted_datacap(uint64_t datacap = -1);
 
 struct User {
     string password;
@@ -51,18 +52,17 @@ public:
     void init_ss();
     
     void import_from(std::istream & input);
-    void export_to(std::ostream & output);
-    void remove_port(const uint16_t port);
-    void add_port(const uint16_t port, const string & password, const uint64_t datacap = 0);
+    void export_to(std::ostream & output, bool readable = false);
+    void remove_port(const char * port);
+    void add_port(const char * port, const char * password, const char * datacap = 0);
     
-    void update_datacap_for_all(const uint64_t datacap);
-    void update_datacap_for_port(const uint16_t port, const uint64_t datacap = 0);
+    void update_datacap_for_all(const char * datacap);
+    void update_datacap_for_port(const char * port, const char * datacap = 0);
     
     void add_data_to_conf(const vector<uint16_t> & ports, const vector<uint64_t> & delta);
     void reset_usage_for_all();
-    void reset_usage_for_port(uint16_t port);
+    void reset_usage_for_port(const char * port);
     
-    bool is_over_datacap(uint16_t port);
     void refresh_all_users();
     
 private:
@@ -78,6 +78,8 @@ private:
     
     void send_remove_request(const uint16_t port);
     void send_add_request(const uint16_t port, const string & password);
+    
+    bool is_over_datacap(const uint16_t port);
     
     
 public:

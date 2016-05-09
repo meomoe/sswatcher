@@ -16,6 +16,7 @@
 #include <sys/file.h>
 #include "status.hpp"
 #include "shared_const.h"
+#include "converter.hpp"
 
 using std::string;
 using std::vector;
@@ -34,15 +35,27 @@ uint64_t get_default_datacap() {
         return datacap_cache;
     
     ifstream ifs(Path::datacap());
-    uint64_t datacap = 0;
+    string datacap;
     if (ifs.good())
         ifs >> datacap;
     ifs.close();
-    datacap_cache = datacap;
-    return datacap;
+    datacap_cache = Converter::parse_size(datacap.c_str());
+    return datacap_cache;
 }
 
-void set_default_datacap(const uint64_t datacap) {
+string get_formatted_datacap(uint64_t datacap) {
+    uint64_t cap = datacap;
+    if (cap == -1)
+        cap = get_default_datacap();
+    if (cap == 0)
+        return "0 (unlimited)";
+    else
+        return Converter::convert_to_string(cap);
+}
+
+void set_default_datacap(const char * datacap) {
+    uint64_t cap = Converter::parse_size(datacap, true);
+    datacap_cache = cap;
     ofstream ofs(Path::datacap());
     ofs << datacap << endl;
     ofs.close();
@@ -105,11 +118,11 @@ unsigned ConfigMgr::load_conf(std::istream & input) {
             
             // set datacap (third argument)
             if (args.size() >= 3)
-                c.datacap = atoll(args[2].c_str());
+                c.datacap = Converter::parse_size(args[2].c_str());
             
             // set usage history (fourth argument)
             if (args.size() >= 4)
-                c.usage = atoll(args[3].c_str());
+                c.usage = Converter::parse_size(args[3].c_str());
             
             users[port] = c;
             
@@ -119,7 +132,7 @@ unsigned ConfigMgr::load_conf(std::istream & input) {
                 
                 cur->second.usage = prev->second.usage;
                 if (args.size() >= 4)
-                    cur->second.usage = atoll(args[3].c_str());
+                    cur->second.usage = Converter::parse_size(args[3].c_str());
                 
                 if (cur->second.datacap != prev->second.datacap) {
                     cur->second.is_over_datacap = is_over_datacap(port);
@@ -206,11 +219,16 @@ void ConfigMgr::import_from(std::istream & input) {
     cout << cnt << " entries imported" << endl;
 }
 
-void ConfigMgr::export_to(std::ostream & output) {
+void ConfigMgr::export_to(std::ostream & output, bool readable) {
     output << "port\tpassword\tdata_cap\tusage" << endl;
     
-    for (UserMap::value_type u : users)
-        output << u.first << "\t" << u.second.password << "\t" << u.second.datacap << "\t" << u.second.usage << endl;
+    for (auto & u : users) {
+        output << u.first << "\t" << u.second.password << "\t" ;
+        if (readable)
+            output << get_formatted_datacap(u.second.datacap) << "\t" << Converter::convert_to_string(u.second.usage) << endl;
+        else
+            output << u.second.datacap << "\t" << u.second.usage << endl;
+    }
 }
 
 void ConfigMgr::send_remove_request(const uint16_t port) {
@@ -226,14 +244,16 @@ void ConfigMgr::send_add_request(const uint16_t port, const string & password) {
     comm->send_request(add_req.c_str());
 }
 
-void ConfigMgr::remove_port(const uint16_t port) {
+void ConfigMgr::remove_port(const char * port) {
     
-    UserMapIter iter = users.find(port);
+    uint16_t pt = atol(port);
+    
+    UserMapIter iter = users.find(pt);
     
     if (iter != users.end()) {
         users.erase(iter);
         
-        send_remove_request(port);
+        send_remove_request(pt);
         
         write_conf();
     } else {
@@ -243,24 +263,28 @@ void ConfigMgr::remove_port(const uint16_t port) {
 }
 
 
-void ConfigMgr::add_port(const uint16_t port, const string & password, const uint64_t datacap) {
+void ConfigMgr::add_port(const char * port, const char * password, const char * datacap) {
     
-    UserMapIter iter = users.find(port);
-    User u = User(password, datacap);
+    uint16_t pt = atol(port);
+    string pwd(password);
+    uint64_t cap = Converter::parse_size(datacap, true);
+    
+    UserMapIter iter = users.find(pt);
+    User u = User(password, cap);
     bool exist = false;
     
     if (iter != users.end()) {
         exist = true;
         
         // we need to first remove the existing port
-        send_remove_request(port);
+        send_remove_request(pt);
         u.usage = iter->second.usage;
         u.is_over_datacap = false;  // will check in write_conf
     }
     
-    users[port] = u;
+    users[pt] = u;
     
-    send_add_request(port, password);
+    send_add_request(pt, pwd);
     
     write_conf();
 }
@@ -300,13 +324,15 @@ void ConfigMgr::refresh_all_users() {
 }
 
 void ConfigMgr::reset_usage_for_all() {
-    for (UserMap::value_type u : users)
+    for (auto & u : users)
         u.second.usage = 0;
     write_conf();
 }
 
-void ConfigMgr::reset_usage_for_port(uint16_t port) {
-    UserMapIter iter = users.find(port);
+void ConfigMgr::reset_usage_for_port(const char * port) {
+    uint16_t pt = atol(port);
+    
+    UserMapIter iter = users.find(pt);
     if (iter != users.end())
         iter->second.usage = 0;
     else {
@@ -316,22 +342,24 @@ void ConfigMgr::reset_usage_for_port(uint16_t port) {
     write_conf();
 }
 
-void ConfigMgr::update_datacap_for_all(const uint64_t datacap) {
-    for (UserMap::value_type u : users)
-        u.second.datacap = datacap;
+void ConfigMgr::update_datacap_for_all(const char * datacap) {
+    uint64_t cap = Converter::parse_size(datacap);
+    
+    for (auto & u : users)
+        u.second.datacap = cap;
     write_conf();
 }
 
-void ConfigMgr::update_datacap_for_port(const uint16_t port, const uint64_t datacap) {
-    UserMapIter iter = users.find(port);
+void ConfigMgr::update_datacap_for_port(const char * port, const char * datacap) {
+    uint16_t pt = atol(port);
+    uint64_t cap = Converter::parse_size(datacap);
+    
+    UserMapIter iter = users.find(pt);
     if (iter != users.end())
-        iter->second.datacap = datacap;
+        iter->second.datacap = cap;
     else {
         cout << "error: port not in use or not managed by " << SSWATCHER << endl;
         exit(EXIT_FAILURE);
     }
     write_conf();
 }
-
-
-

@@ -79,8 +79,7 @@ void start_ss(string user) {
             ConfigMgr::instance().init_ss();
         } else {
             cout << "error: config file not found" << endl;
-            cout << "       please place a valid Shadowsocks config file at " << Path::ss_config() << endl;
-            cout << "       or specify a config file using \"sudo sswatcher start config [file_path]\"" << endl;
+            cout << "       please place a valid Shadowsocks config file at \"" << Path::ss_config() << "\", or specify a config file" << endl;
             exit(EXIT_FAILURE);
         }
         
