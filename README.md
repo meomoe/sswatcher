@@ -133,7 +133,7 @@ The following examples assume that you have the default installation of sswatche
 
 ## Usage
 
-    See [sswatcher Usage reference](https://github.com/meomoe/sswatcher/wiki/sswatcher-Usage-Reference).
+See [sswatcher Usage reference](https://github.com/meomoe/sswatcher/wiki/sswatcher-Usage-Reference). Many of the commands are changed.
 
 ## License
 
