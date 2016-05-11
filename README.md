@@ -64,31 +64,31 @@ sswatcher is a [Shadowsocks](https://shadowsocks.org/en/index.html) user managem
 
 The following examples assume that you have the default installation of sswatcher and Shadowsocks Python.
 
-1. Start sswatcher
+- Start sswatcher
 
    ```
    sudo sswatcher start
    ```
 
-2. Add port `20000` with `password1` to Shadowsocks
+- Add port `20000` with `password1` to Shadowsocks
 
    ```
    sswatcher add 20000 password1
    ```
 
-3. Add port `30000` with `password2`, and set the data cap to 20 GB.
+- Add port `30000` with `password2`, and set the data cap to 20 GB.
 
    ```
    sswatcher add 30000 password2 20
    ```
 
-4. Show statistics for current users
+- Show statistics for current users
 
    ```
    sswatcher stat
    ```
 
-   The result is a tab separated table:
+   Result:
 
    ```
    port		password	data_cap		usage
@@ -96,13 +96,13 @@ The following examples assume that you have the default installation of sswatche
    30000	password2	20.00 GB		283.96 MB
    ```
 
-5. Remove port `30000`
+- Remove port `30000`
 
    ```
    sswatcher remove 30000
    ```
 
-6. Load sswatcher config file from `~/users.tsv`
+- Load sswatcher config file from `~/users.tsv`
 
    Contents of `users.tsv`:
 
@@ -133,7 +133,7 @@ The following examples assume that you have the default installation of sswatche
 
 ## Usage
 
-See [sswatcher Usage reference](https://github.com/meomoe/sswatcher/wiki/sswatcher-Usage-Reference). Many of the commands are changed.
+See [sswatcher Usage Reference](https://github.com/meomoe/sswatcher/wiki/sswatcher-Usage-Reference).
 
 ## License
 

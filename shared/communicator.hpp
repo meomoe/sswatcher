@@ -5,6 +5,8 @@
 //  Created by Jason Zhong on 5/3/16.
 //  Copyright © 2016 Meom.moe. All rights reserved.
 //
+//  Manages communication with ssserver
+//
 
 #ifndef communicator_hpp
 #define communicator_hpp

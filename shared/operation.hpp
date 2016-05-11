@@ -5,7 +5,7 @@
 //  Created by Jason Zhong on 5/2/16.
 //  Copyright © 2016 Meom.moe. All rights reserved.
 //
-//  Controls shadowsocks
+//  Controls shadowsocks and sswatcher configurations
 //
 
 #ifndef operation_hpp

@@ -5,6 +5,8 @@
 //  Created by Jason Zhong on 5/7/16.
 //  Copyright © 2016 Meom.moe. All rights reserved.
 //
+//  Defines the version numbers
+//
 
 #ifndef ver_h
 #define ver_h

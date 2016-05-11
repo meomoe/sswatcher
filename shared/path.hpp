@@ -5,6 +5,7 @@
 //  Created by Jason Zhong on 5/6/16.
 //  Copyright © 2016 Meom.moe. All rights reserved.
 //
+//  Defines paths and related constants for sswatcher
 
 #ifndef path_hpp
 #define path_hpp

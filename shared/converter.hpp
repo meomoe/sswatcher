@@ -5,6 +5,8 @@
 //  Created by Jason Zhong on 5/9/16.
 //  Copyright © 2016 Meom.moe. All rights reserved.
 //
+//  Unit conversion
+//
 
 #ifndef converter_hpp
 #define converter_hpp

@@ -5,6 +5,7 @@
 //  Created by Jason Zhong on 5/2/16.
 //  Copyright © 2016 Meom.moe. All rights reserved.
 //
+//  Makes necessaries with the OS
 
 #ifndef sys_helper_hpp
 #define sys_helper_hpp

@@ -1,30 +1,36 @@
-SSWATCHER = watcher
-SSWATCHERD = daemon
+WATCHER_DIR = watcher
+DAEMON_DIR = daemon
+SSWATCHER = sswatcher
+SSWATCHERD = sswatcherd
 SHARED = shared
 
 bindir = /usr/local/bin
 
 all: build move clean
 
-.PHONY: build sswatcher sswatcherd move clean install
+.PHONY: build $(SSWATCHER) $(SSWATCHERD) move clean install uninstall
 
-build: sswatcher sswatcherd
+build: $(SSWATCHER) $(SSWATCHERD)
 
-sswatcher:
-	cd $(SSWATCHER); make
+$(SSWATCHER):
+	cd $(WATCHER_DIR); make
 
-sswatcherd:
-	cd $(SSWATCHERD); make
+$(SSWATCHERD):
+	cd $(DAEMON_DIR); make
 
 move:
-	mv $(SSWATCHER)/sswatcher sswatcher
-	mv $(SSWATCHERD)/sswatcherd sswatcherd
+	mv $(WATCHER_DIR)/$(SSWATCHER) $(SSWATCHER)
+	mv $(DAEMON_DIR)/$(SSWATCHERD) $(SSWATCHERD)
 
 clean:
-	cd $(SSWATCHER); make clean
-	cd $(SSWATCHERD); make clean
+	cd $(WATCHER_DIR); make clean
+	cd $(DAEMON_DIR); make clean
 
 install:
-	install sswatcher $(bindir)
-	install sswatcherd $(bindir)
+	install $(SSWATCHER) $(bindir)
+	install $(SSWATCHERD) $(bindir)
 	cp -i ss-config.json /etc/shadowsocks.json
+
+uninstall:
+	rm $(bindir)/$(SSWATCHER)
+	rm $(bindir)/$(SSWATCHERD)

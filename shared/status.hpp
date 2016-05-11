@@ -5,7 +5,7 @@
 //  Created by Jason Zhong on 5/2/16.
 //  Copyright © 2016 Meom.moe. All rights reserved.
 //
-//  Start, stop, and show status of shadowsocks and ss-daemon
+//  Start, stop, and show status of shadowsocks and sswatcherd
 //
 
 #ifndef status_hpp
