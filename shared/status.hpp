@@ -15,6 +15,8 @@
 using std::string;
 
 void show_status();
+bool ss_is_runnning();
+bool daemon_is_running();
 void start_ss(string user = "");
 void stop_ss();
 void restart();

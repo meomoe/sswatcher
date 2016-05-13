@@ -59,9 +59,7 @@ Communicator::Communicator(string client) {
     if (connect(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1) {
         syslog(LOG_ERR, "unable to connect to server, code=%d (%s)",
                errno, strerror(errno));
-        printf("error: unable to connect to ssserver, code=%d (%s)\n", errno, strerror(errno));
-        printf("       consider stopping ssserver first:\n");
-        printf("       sudo ssserver -d stop");
+        fprintf(stderr, "error: unable to connect to ssserver, code=%d (%s)\n", errno, strerror(errno));
         exit(EXIT_FAILURE);
     }
 }

@@ -1,5 +1,6 @@
 WATCHER_DIR = watcher
 DAEMON_DIR = daemon
+RES_DIR = resources
 SSWATCHER = sswatcher
 SSWATCHERD = sswatcherd
 SHARED = shared
@@ -29,7 +30,7 @@ clean:
 install:
 	install $(SSWATCHER) $(bindir)
 	install $(SSWATCHERD) $(bindir)
-	cp -i ss-config.json /etc/shadowsocks.json
+	cp -i $(RES_DIR)/ss-config.json /etc/shadowsocks.json
 
 uninstall:
 	rm $(bindir)/$(SSWATCHER)

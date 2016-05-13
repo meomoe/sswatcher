@@ -21,6 +21,7 @@
 using std::ifstream;
 using std::ofstream;
 using std::cout;
+using std::cerr;
 using std::endl;
 using std::system;
 
@@ -40,9 +41,18 @@ void show_status() {
     show_status(SSWATCHERD, SSWATCHERD_REGEX);
 }
 
+
+bool ss_is_runnning() {
+    return get_pid_by_name(SSSERVER_REGEX) != -1;
+}
+
+bool daemon_is_running() {
+    return get_pid_by_name(SSWATCHERD_REGEX) != -1;
+}
+
 static void check_prev() {
     if (!(getuid() == 0 || geteuid() == 0)) {
-        cout << "error: starting or stopping requires root privilege" << endl;
+        cerr << "error: starting or stopping requires root privilege" << endl;
         exit(EXIT_FAILURE);
     }
 }
@@ -63,7 +73,7 @@ void start_ss(string user) {
     
     
     // start ssserver
-    if (get_pid_by_name(SSSERVER_REGEX) == -1) {
+    if (!ss_is_runnning()) {
         if (file_exist(Path::ss_config())) {
             if (file_exist(Path::server_sock()))
                 remove(Path::server_sock().c_str());
@@ -78,15 +88,15 @@ void start_ss(string user) {
             
             ConfigMgr::instance().init_ss();
         } else {
-            cout << "error: config file not found" << endl;
-            cout << "       please place a valid Shadowsocks config file at \"" << Path::ss_config() << "\", or specify a config file" << endl;
+            cerr << "error: config file not found" << endl;
+            cerr << "       please place a valid Shadowsocks config file at \"" << Path::ss_config() << "\", or specify a config file" << endl;
             exit(EXIT_FAILURE);
         }
         
     }
     
     // start sswatcher daemon
-    if (get_pid_by_name(SSWATCHERD_REGEX) == -1) {
+    if (!daemon_is_running()) {
         cmd = get_exec_path() + SSWATCHERD;
         // set run-as user for sswatcherd
         if (user != "")

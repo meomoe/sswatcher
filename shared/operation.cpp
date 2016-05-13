@@ -23,6 +23,7 @@ using std::vector;
 using std::ifstream;
 using std::ofstream;
 using std::cout;
+using std::cerr;
 using std::endl;
 
 #define PLACEHOLDER_PORT 8383
@@ -213,7 +214,8 @@ void ConfigMgr::set_comm() {
 }
 
 void ConfigMgr::import_from(std::istream & input) {
-    init_ss();
+    if (ss_is_runnning())
+        init_ss();
     unsigned cnt = load_conf(input);
     write_conf();
     cout << cnt << " entries imported" << endl;
@@ -257,7 +259,7 @@ void ConfigMgr::remove_port(const char * port) {
         
         write_conf();
     } else {
-        cout << "could not find entry with port " << port << endl;
+        cerr << "error: could not find entry with port " << port << endl;
         exit(EXIT_FAILURE);
     }
 }
@@ -336,7 +338,7 @@ void ConfigMgr::reset_usage_for_port(const char * port) {
     if (iter != users.end())
         iter->second.usage = 0;
     else {
-        cout << "error: port not in use or not managed by " << SSWATCHER << endl;
+        cerr << "error: port not in use or not managed by " << SSWATCHER << endl;
         exit(EXIT_FAILURE);
     }
     write_conf();
@@ -358,7 +360,7 @@ void ConfigMgr::update_datacap_for_port(const char * port, const char * datacap)
     if (iter != users.end())
         iter->second.datacap = cap;
     else {
-        cout << "error: port not in use or not managed by " << SSWATCHER << endl;
+        cerr << "error: port not in use or not managed by " << SSWATCHER << endl;
         exit(EXIT_FAILURE);
     }
     write_conf();

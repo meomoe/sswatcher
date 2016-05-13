@@ -91,9 +91,9 @@ The following examples assume that you have the default installation of sswatche
    Result:
 
    ```
-   port		password	data_cap		usage
-   20000	password1	0 (unlimited)	19.05 GB
-   30000	password2	20.00 GB		283.96 MB
+   port     password    data_cap        usage
+   20000    password1   0 (unlimited)   19.05 GB
+   30000    password2   20.00 GB        283.96 MB
    ```
 
 - Remove port `30000`
@@ -121,14 +121,21 @@ The following examples assume that you have the default installation of sswatche
 
    Note: currently, loading a config file to sswatcher erases all previous entries; however, if a port exists both in the old configuration and the loaded config file, and its usage data was not present in the loaded file (as in this example), its usage data will be preserved.
 
+
 ## Details
 
-- By default, sswatcher uses the config file at `/etc/shadowsocks.json` to initialize Shadowsocks. If you already have have that file in place, you will be asked if you would like to overwrite that file during installation.
+You should understand the following details if you plan to use sswatcher:
+
+- You can manage the sswatcher config file while ssserver is not running. However, these changes will only take effect the next time you start sswatcher using `sswatcher start`.
+
+- Shadowsocks runs in parallel with sswatcher. sswatcher does **not** read your Shadowsocks config file, nor does Shadowsocks understand the sswatcher config file.
+
+- By default, sswatcher uses the config file at `/etc/shadowsocks.json` to initialize Shadowsocks. If you already have have that file in place, you will be asked if you would like to overwrite that file during installation. If you want to specify another file, please refer to the [sswatcher Usage Reference](https://github.com/meomoe/sswatcher/wiki/sswatcher-Usage-Reference).
 
 - The port `8383` is considered by sswatcher as a placeholder port in the Shadowsocks config file, and will be removed when sswatcher starts. If you plan to only use sswatcher, please leave this port in the Shadowsocks config file. However, if you have configured ports in the Shadowsocks config file, please do not use port `8383`. The reason for having a placeholder file is because Shadowsocks does not allow an empty `"port_password"` field.  
    To learn more about Shadowsocks config file, please refer to this [link](https://github.com/shadowsocks/shadowsocks/wiki/Configure-Multiple-Users).
 
-- Passwords should not contain any spaces.
+- Passwords in sswatcher should not contain any spaces.
 
 
 ## Usage
