@@ -53,6 +53,7 @@ public:
     
     void import_from(std::istream & input);
     void export_to(std::ostream & output, bool readable = false);
+    void export_user(std::ostream & output);
     void remove_port(const char * port);
     void add_port(const char * port, const char * password, const char * datacap = 0);
     

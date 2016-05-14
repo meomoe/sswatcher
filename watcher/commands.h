@@ -22,6 +22,7 @@
 #define CMD_RESET_ALL   "reset_all"
 #define CMD_REMOVE      "remove"
 #define CMD_EXPORT      "export"
+#define CMD_EXPUSR      "export_users"
 #define CMD_DEF_LIM_1   "dlim"
 #define CMD_DEF_LIM_2   "default_limit"
 #define CMD_START       "start"

@@ -233,6 +233,13 @@ void ConfigMgr::export_to(std::ostream & output, bool readable) {
     }
 }
 
+void ConfigMgr::export_user(std::ostream & output) {
+    output << "port\tpassword" << endl;
+    
+    for (auto & u : users)
+        output << u.first << "\t" << u.second.password << endl;
+}
+
 void ConfigMgr::send_remove_request(const uint16_t port) {
     set_comm();
     string remove_req = "remove: {\"server_port\": " + std::to_string(port) + "}";

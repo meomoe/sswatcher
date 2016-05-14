@@ -85,6 +85,10 @@ void handle_input(int argc, const char * argv[]) {
                 ofstream output((string(argv[2])));
                 mgr->export_to(output);
                 output.close();
+            } else if (task == CMD_EXPUSR) {
+                ofstream output((string(argv[2])));
+                mgr->export_user(output);
+                output.close();
             } else if (task == CMD_DEF_LIM_1 || task == CMD_DEF_LIM_2) {
                 set_default_datacap(argv[2]);
             } else if (task == CMD_DEF_LIM_1 || task == CMD_DEF_LIM_2) {
@@ -177,6 +181,7 @@ void show_usage(bool success) {
     cout << spaces << CMD_REMOVE << " <port>" << endl;
     cout << spaces << CMD_LOAD << " <file_path>" << endl;
     cout << spaces << CMD_EXPORT << " <file_path>" << endl;
+    cout << spaces << CMD_EXPUSR << " <file_path>" << endl;
     cout << spaces << CMD_DEF_LIM_2 << endl;
     cout << spaces << CMD_DEF_LIM_2 << " <limit>" << endl;
     
