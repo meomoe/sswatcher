@@ -214,10 +214,10 @@ void ConfigMgr::set_comm() {
 }
 
 void ConfigMgr::import_from(std::istream & input) {
-    if (ss_is_runnning())
-        init_ss();
     unsigned cnt = load_conf(input);
     write_conf();
+    if (ss_is_runnning())
+        init_ss();
     cout << cnt << " entries imported" << endl;
 }
 
